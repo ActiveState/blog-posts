@@ -104,7 +104,76 @@ substitution operator returns a new string rather than modifying the original:
 This was always possible using a much uglier idiom, but this operator is much
 clearer.
 
+### The `fc` Operator
 
+Comparing Unicode strings case-insensitively can be tricky. Unicode has a
+concept called "foldcase" which addresses this. When you apply foldcasing to
+two strings, then you can compare them with confidence that you will not get
+false positives or negatives. Perl 5.16 added an `fc` operator to help you do
+just that.
+
+### Hash Randomization
+
+The order of the items returned by `keys`, `values`, and `each` was randomized
+starting in 5.18. This makes Perl hashes more robust against algorithmic
+complexity attacks, which can be used to cause a denial of service.
+
+Note that we'll cover this again later in the section on what you need to
+watch out for!
+
+### Subroutine Signatures
+
+This was added as an experimental feature in 5.20, and is one of my favorite
+additions to Perl in recent years. If you enable the signatures feature you
+can write code like this:
+
+    use feature 'signatures';
+    no warnings 'experimental::signatures';
+    sub run ( $self, $command, %opts = () ) { ... }
+
+This simple feature goes a long way towards improving the readability of your
+Perl code!
+
+### Hash and (New) Array Slices
+
+Arrays have supported a slice syntax for a long time:
+
+    my ( $first, $second ) = @array[0, 1];
+
+But now you can do this with hashes too:
+
+    my %subset = %hash{ 'foo', 'bar' }
+
+Pretty neat! But you can also do this with arrays:
+
+    my @array = ( 'a'..'z' );
+    my %int_hash = %array{ 1, 2 }
+    # %int_hash is ( 1 => 'b', 2 => 'c' )
+
+### Postfix Dereferencing
+
+Postfix dereferencing is another new experimental feature in 5.20, and it has
+since been marked as stable in 5.24. Perl has rightly been criticized for the
+ugly syntax require to dereference a complex data structure. For example:
+
+    my @elems = @{ $foo->{bar}[0]{baz} };
+
+That outer `@{ ... }` wrapper breaks the nice left to right dereferencing
+syntax of the contained expression. With postfix dereferencing, we can make
+the syntax consistent (if not beautiful):
+
+    my @elems = $foo->{bar}[0]{baz}->@*;
+
+It's not elegant, but on balance, I find this a bit more readable than the `@{
+... }` wrapper version. This works for any sort of reference, including
+scalars, arrays, hashes, subs, and globs.
+
+### Non-Capturing Regex Grouping
+
+Are you annoyed at writing `/(?:foo|bar)/` all the time just to avoid the
+speed hit of capturing in regexes? I know I am! Perl 5.22 adds a new `/n`
+regex modifier which disables all capturing, so you can write `/(foo|bar)/n`
+instead.
 
 ### Unicode
 
@@ -114,4 +183,142 @@ meaning that if you want to be able to use the full spectrum of Unicode
 characters in your code, you need to upgrade. Perl 5.10.1 used version 5.1.0
 of the Unicode character database. Perl 5.24 uses verson 8.0 of that database.
 
+### And So Much More
 
+This is a very quick skim of the updates in major releases from 5.12 through
+5.24. There's a lot I didn't even mention. You can read through the perldelta
+docs yourself for more details:
+
+* (Perl 5.12.0)[https://metacpan.org/pod/distribution/perl/pod/perl5120delta.pod]
+* (Perl 5.14.0)[https://metacpan.org/pod/distribution/perl/pod/perl5140delta.pod]
+* (Perl 5.16.0)[https://metacpan.org/pod/distribution/perl/pod/perl5160delta.pod]
+* (Perl 5.18.0)[https://metacpan.org/pod/distribution/perl/pod/perl5180delta.pod]
+* (Perl 5.20.0)[https://metacpan.org/pod/distribution/perl/pod/perl5200delta.pod]
+* (Perl 5.22.0)[https://metacpan.org/pod/distribution/perl/pod/perl5220delta.pod]
+* (Perl 5.24.0)[https://metacpan.org/pod/distribution/perl/pod/perl5240delta.pod]
+
+## Land Mines Along the Way
+
+It's not just features you get with an upgrade. You also get some backwards
+incompatibilities and other potential breakage.
+
+As part of your upgrade process, here are some of the highlights to watch out
+for.
+
+### Smartmatch is In Limbo
+
+The smartmatch feature was first added in 5.10.0, and later revised in
+5.10.1. It was then marked as experimental in 5.18.0. In 2016 there was a
+discussion about whether to revise or kill the feature that has not yet been
+resolved.
+
+Smartmatch may return in a future release, but it will be in a simplified form
+if it does. For now, I would suggest removing the use of smartmatch
+(`given`/`when` and `~~`)from any production code before upgrading your Perl.
+
+### Importing from `UNIVERSAL` is Forbidden
+
+Starting with Perl 5.12, importing things like `isa` and `can` from
+`UNIVERSAL` was deprecated. In 5.22 this became a fatal error. You should
+always call these subroutines as class or object methods.
+
+### Storable as a Data Interchange Format
+
+If you're using the `Storable` module to serialize and thaw data between Perl
+processes, or worse, you are storing data in this format in files, a database,
+or cookies, then you need to be very careful with your upgrade process. This
+module does not guarantee binary compatibility across releases. If you pass
+data from a newer version of `Storable` to an older version, it will always
+die. This module is part of the core, so upgrading your Perl will upgrade your
+`Storable`.
+
+One possibility is to upgrade all of your systems to the most recent version
+*before* you upgrade your Perl. Then as you upgrade a given system, you can
+reinstall the latest Storable, ensuring compatibility between systems.
+
+A better, more permanent fix, is to not use `Storable` this way at all! It's
+not the best choice for data interchange. Instead, consider switching
+to [`Sereal`](http://code.activestate.com/ppm/Sereal/).
+
+### Hash Randomization
+
+As I already mentioned, the order of the items returned by `keys`, `values`,
+and `each` was randomized starting in 5.18. This is good, but it has the
+potential to break your code. In my experience, the most vulnerable code is
+typically test code that does something like this:
+
+    use Test::More;
+    is_deeply( [ keys %hash ], [ 'foo', 'bar' ], ... );
+
+This worked in older Perls because once you knew the stable order that keys
+were returned in, you could hard code this in tests. Starting with Perl 5.18,
+these tests will fail. Sometimes. This leads to all sorts of fun to debug
+problems as you try to figure out why your test suite is failing on random
+changes unrelated to the failing test.
+
+The fix, of course, is to use `sort` whenever you get the `keys` or `values`
+from a hash:
+
+    use Test::More;
+    is_deeply( [ sort keys %hash ], [ 'bar', 'foo' ], ... );
+
+This could also come into play as an order of operations bug in non-test
+code. Again, this will manifest as subtle intermittent failures.
+
+### `Devel::DProf` is dead
+
+This module was removed from the core in 5.14, and it is no longer
+maintained. Use
+[`Devel::NYTProf`](http://code.activestate.com/ppm/Devel-NYTProf/) for your
+profiling needs instead.
+
+### And More
+
+As with features, there many other smaller changes. Most of these will
+manifest as either warnings, compilation errors, or runtime errors.
+
+For the warnings, it's very important that you capture all output from your
+code when you test it with an upgraded Perl. These warning go direct from the
+Perl interpreter to `stderr`. It's possible to intercept them, but not easy to
+do this for all code consistently. Make sure that `stderr` isn't going to
+`/dev/null`!
+
+The forbidden syntax is easier to spot, since this will cause the interpreter
+to die during compilation.
+
+## Upgrading Best Practices
+
+We recommend that you first start by trying ActivePerl 5.24.1. Upgrading to
+intermediate releases one at a time is a lot of work, and a problem surfaced
+in 5.16 may be fixed in 5.20 anyway.
+
+If you have test suites (of course you have test suites) then the easiest
+place to start is by running the suite under the latest Perl.
+
+Once your tests pass and are warnings-free under the new Perl, you can then
+uprade a staging machine or two, then a few more, and so on.
+
+Something you should be paying attention to both in the test suite and on
+staging machines is the performance characteristics of your Perl code. While
+recent versions of Perl include some new optimizations, they may also be
+slower in some areas. What this might be is hard to predict, so there's no
+substitute for just monitoring CPU usage, disk usage, memory usage, etc.
+
+Once you've squashed the problems surfaced in staging, you can take the same
+incremental approach to production. Upgrade one or two machines and monitor
+them closely. Then upgrade a few more, and so on.
+
+If you get really stuck with 5.24.1, you might consider falling back to an
+earlier release like 5.20 as a stopgap, but upgrading to any recent release
+from 5.8 or 5.10 will be a major project, so you might as well get the new
+shiny bits while you're at it.
+
+Fortunately, once you've bitten the bullet and done the big leap, future
+upgades will be much easier. We recommend that you plan to upgrade your Perl
+at least every other major release. Given the relatively smaller delta between
+major releases these days, skipping one major release is fine. Skipping more
+than one could tempt you to skip many, and suddenly you're back here, planning
+a big project to update from an ancient version of Perl.
+
+Make upgrading simple by doing it often so it becomes routine rather than an
+infrequent but huge chore.
