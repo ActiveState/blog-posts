@@ -155,6 +155,11 @@ the syntax consistent (if not beautiful):
 
     my @elems = $foo->{bar}[0]{baz}->@*;
 
+The difference is even more apparent when you compare the slice syntax:
+
+    my @subset = @{ $foo->{bar}[0]{baz} }[0, 2, 3];
+    @subset = $foo->{bar}[0]{baz}->@[0, 2, 3];
+
 It's not elegant, but on balance, I find this a bit more readable than the `@{
 ... }` wrapper version. This works for any sort of reference, including
 scalars, arrays, hashes, subs, and globs.
