@@ -106,8 +106,9 @@ operator to help you do just that.
 ### Hash Randomization
 
 The order of the items returned by `keys`, `values`, and `each` was randomized
-starting in 5.18. This makes Perl hashes more robust against algorithmic
-complexity attacks, which can be used to cause a denial of service.
+for each call starting in 5.18. This makes Perl hashes more robust against
+algorithmic complexity attacks, which can be used to cause a denial of
+service.
 
 Note that we'll cover this again later in the section on what you need to
 watch out for!
