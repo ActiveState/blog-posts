@@ -67,10 +67,10 @@ well past 2038. Imagine calculating the interest and principal payments for a
 30-year mortgage starting today.
 
 Fortunately, there are many efforts to ameliorate this problem, and 64-bit
-platforms today use a 64-bit integer for `time_t`. The Perl core got a
-head start on this in the 5.12 release by making sure that time is always
-represented with a 64-bit integer internally, regardless of the platform's
-integer size.
+platforms today use a 64-bit integer for `time_t`. The Perl core got a head
+start on this in the 5.12 release by making sure that time is always
+represented with something much larger than a 32-bit integer internally,
+regardless of the platform's integer size.
 
 ### Regexes and Unicode
 
