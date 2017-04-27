@@ -180,9 +180,9 @@ meaning that if you want to be able to use the full spectrum of Unicode
 characters in your code, you need to upgrade. Perl 5.10.1 used version 5.1.0
 of the Unicode character database. Perl 5.24 uses version 8.0 of that database.
 
-And of course, there have been many Unicode bugs fixed since 5.10.1. Karl
-Williams, a core developer who's put a huge amount of work into Perl's Unicode
-support, recommends a minimum of 5.14 for serious Unicode processing.
+And of course, there have been many Unicode bugs fixed since 5.10.1. The Perl
+core's Unicode introduction docs state that "Perl v5.14.0 is the first release
+where Unicode support is (almost) seamlessly integrable without some gotchas".
 
 ### And So Much More
 
