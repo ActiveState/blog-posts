@@ -342,3 +342,9 @@ version.
 
 You can make upgrading simple by doing it often. That way it becomes routine
 rather than an infrequent and very painful chore.
+
+## Thanks
+
+Thanks to the denizens of #p5p on irc.perl.org for reviewing an earlier draft
+of this article and providing valuable feedback, including Joel Berger,
+Christian Hansen, Dominic Hargreaves, and Karl Williamson, among others.
