@@ -272,13 +272,10 @@ code. Again, this will manifest as subtle intermittent failures.
 ### Assigning to `$0` Sets the Legacy Process Name
 
 What does that mean? The short answer is that in old versions of Perl, setting
-`$0` would not change the program's name in things like `top` or for the
-purposes of `killall`. If you relied on being able to monitor or kill things
-based on the program name at startup, you should check your code base for
-assignmnent to `$0`.
-
-On the plus, side, this is really a feature, since developers can set `$0` in
-order to help the ops folks understand what they are seeing in `ps` and `top`.
+`$0` would call `prctl` in addition to setting `argv[0]`. This means that some
+programs, notably `killall`, will now see the updated name. If you relied on
+being able to kill things based on the program name at startup, you should
+check your code base for assignmnent to `$0`.
 
 ### `Devel::DProf` is dead
 
