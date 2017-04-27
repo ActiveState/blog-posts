@@ -208,7 +208,12 @@ resolved.
 
 Smartmatch may return as stable in a future release, but if so it will be in a
 simplified form. For now, I would suggest removing the use of smartmatch
-(`given`/`when` and `~~`) from any production code before upgrading your Perl.
+(`given`/`when` and `~~`) from any production code before upgrading your
+Perl. Some alternatives include the list comprehension functions like `any`
+from
+[`List::Util`](https://metacpan.org/pod/List::Util),
+[`Switch::Plain`](http://code.activestate.com/ppm/Switch-Plain/), and good old
+`if`/`elsif`.
 
 ### Importing from `UNIVERSAL` is Forbidden
 
