@@ -320,5 +320,9 @@ major releases these days, skipping one major release is fine. Skipping more
 than one could tempt you to skip many, and suddenly you're back here, planning
 a big project to update from an ancient version of Perl.
 
+The downside to skipping *any* releases is that you may miss out on
+deprecation warnings telling you about something that will go away in the next
+version.
+
 Make upgrading simple by doing it often so it becomes routine rather than an
 infrequent and very painful chore.
