@@ -1,4 +1,4 @@
-# The ActiveState Guide to Upgrading Perl to a Modern Version
+# Upgrading Perl to a Modern Version, the ActiveState Guide
 
 For various historical reasons, many organizations stopped upgrading Perl
 after the release of 5.8.8 or 5.10.1. At that point in history, major releases
