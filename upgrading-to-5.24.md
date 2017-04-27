@@ -269,6 +269,17 @@ from a hash:
 This could also come into play as an order of operations bug in non-test
 code. Again, this will manifest as subtle intermittent failures.
 
+### Assigning to `$0` Sets the Legacy Process Name
+
+What does that mean? The short answer is that in old versions of Perl, setting
+`$0` would not change the program's name in things like `top` or for the
+purposes of `killall`. If you relied on being able to monitor or kill things
+based on the program name at startup, you should check your code base for
+assignmnent to `$0`.
+
+On the plus, side, this is really a feature, since developers can set `$0` in
+order to help the ops folks understand what they are seeing in `ps` and `top`.
+
 ### `Devel::DProf` is dead
 
 This module was removed from the core in 5.14, and it is no longer
