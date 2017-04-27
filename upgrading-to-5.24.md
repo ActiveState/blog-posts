@@ -324,5 +324,5 @@ The downside to skipping *any* releases is that you may miss out on
 deprecation warnings telling you about something that will go away in the next
 version.
 
-Make upgrading simple by doing it often so it becomes routine rather than an
-infrequent and very painful chore.
+You can make upgrading simple by doing it often. That way it becomes routine
+rather than an infrequent and very painful chore.
