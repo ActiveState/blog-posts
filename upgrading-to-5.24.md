@@ -35,8 +35,8 @@ than they used to be. Point releases are *extremely* safe, and we recommend
 always upgrading when a new point release comes out.
 
 But if you haven't upgraded for ages, you're still in a difficult
-situation. How do you get from there to here? What should you look out for?
-And why should you even upgrade at all?
+situation. How do you get from ancient Perl to modern Perl? What should you
+look out for? And why should you even upgrade at all?
 
 ## Features and Fixes
 
