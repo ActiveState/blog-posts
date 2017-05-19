@@ -275,7 +275,7 @@ What does that mean? The short answer is that in old versions of Perl, setting
 `$0` would call `prctl` in addition to setting `argv[0]`. This means that some
 programs, notably `killall`, will now see the updated name. If you relied on
 being able to kill things based on the program name at startup, you should
-check your code base for assignmnent to `$0`.
+check your code base for assignment to `$0`.
 
 ### `Devel::DProf` is dead
 
@@ -300,10 +300,10 @@ to die during compilation.
 
 ## Upgrading Best Practices
 
-We recommend that you first start by trying ActivePerl 5.24.1 (or if you're in
-the future, the latest stable release we offer). Upgrading to intermediate
-releases one at a time is a lot of work, and a problem surfaced in 5.16 may be
-fixed in 5.20 anyway.
+We recommend that you first start by trying ActivePerl 5.24.1 (or if you're
+reading this in the future, the latest stable release we offer). Upgrading to
+intermediate releases one at a time is a lot of work, and a problem surfaced
+in 5.16 may be fixed in 5.20 anyway.
 
 If you have test suites (of course you have test suites) then the easiest
 place to start is by running the suite under the latest Perl.
@@ -343,5 +343,9 @@ rather than an infrequent and very painful chore.
 ## Thanks
 
 Thanks to the denizens of #p5p on irc.perl.org for reviewing an earlier draft
-of this article and providing valuable feedback, including Joel Berger,
-Christian Hansen, Dominic Hargreaves, and Karl Williamson, among others.
+of this article and providing valuable feedback,
+including
+[Joel Berger](https://github.com/jberger),
+[Christian Hansen](https://github.com/chansen),
+[Dominic Hargreaves](https://github.com/jmdh),
+and [Karl Williamson](https://github.com/khwilliamson), among others.
