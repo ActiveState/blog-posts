@@ -146,7 +146,7 @@ Pretty neat! But you can also do this with arrays:
 
 Postfix dereferencing is another new experimental feature in 5.20, and it has
 since been marked as stable in 5.24. Perl has rightly been criticized for the
-ugly syntax require to dereference a complex data structure. For example:
+ugly syntax required to dereference a complex data structure. For example:
 
     my @elems = @{ $foo->{bar}[0]{baz} };
 
