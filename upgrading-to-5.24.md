@@ -237,8 +237,9 @@ version, the older version will always die. This module is part of the core,
 so upgrading your Perl will upgrade your `Storable`.
 
 One possibility is to upgrade all of your systems to the most recent version
-*before* you upgrade your Perl. Then as you upgrade a given system, you can
-re-install the latest Storable, ensuring compatibility between systems.
+of `Storable` *before* you upgrade your Perl. Then as you upgrade a given
+system, you can re-install the latest Storable, ensuring compatibility between
+systems.
 
 A better, more permanent fix, is to not use `Storable` this way at all!
 `Storable` is a poor choice for data interchange. Instead, consider switching
@@ -271,11 +272,11 @@ code. Again, this will manifest as subtle intermittent failures.
 
 ### Assigning to `$0` Sets the Legacy Process Name
 
-What does that mean? The short answer is that in old versions of Perl, setting
-`$0` would call `prctl` in addition to setting `argv[0]`. This means that some
-programs, notably `killall`, will now see the updated name. If you relied on
-being able to kill things based on the program name at startup, you should
-check your code base for assignment to `$0`.
+What does that mean? The short answer is that starting with Perl 5.14, setting
+`$0` calls `prctl` in addition to setting `argv[0]`. This means that some
+programs, notably `killall`, will now see the updated name. If you rely on
+being able to kill things based on the name a process has at startup, you
+should check your code base for assignment to `$0`.
 
 ### `Devel::DProf` is dead
 
@@ -328,7 +329,7 @@ new shiny bits while you're at it.
 
 Fortunately, once you've bitten the bullet and done the big leap, future
 upgrades will be much easier. We recommend that you plan to upgrade your Perl
-at least every other major release. Given the relatively smaller delta between
+at least every other major release. Given the relatively small delta between
 major releases these days, skipping one major release is fine. Skipping more
 than one could tempt you to skip many, and suddenly you're back here, planning
 a big project to update from an ancient version of Perl.
